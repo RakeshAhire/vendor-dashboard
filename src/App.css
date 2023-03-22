@@ -1,0 +1,33 @@
+.body {
+  background: #f7fafc;
+}
+
+.trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.logo {
+height: 50px;
+  background: rgb(34, 183, 225);
+}
+.ant-layout {
+  min-height: 100vh;
+  background: rgb(88, 155, 161);
+}
+.ant-layout .ant-layout-sider-children {
+  height: max-content;
+  position: sticky;
+  top: 0px;
+  
+}
+.ant-menu-item, .ant-menu-submenu-title,.ant-menu-item-icon{
+  font-weight: bold;
+}
