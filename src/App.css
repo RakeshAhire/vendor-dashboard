@@ -15,19 +15,25 @@
 }
 
 .logo {
-height: 50px;
+  height: 50px;
   background: rgb(34, 183, 225);
+  margin-bottom: 20px;
 }
+
 .ant-layout {
   min-height: 100vh;
   background: rgb(88, 155, 161);
 }
+
 .ant-layout .ant-layout-sider-children {
   height: max-content;
   position: sticky;
   top: 0px;
-  
 }
-.ant-menu-item, .ant-menu-submenu-title,.ant-menu-item-icon{
+
+.ant-menu-item,
+.ant-menu-submenu-title,
+.ant-menu-item-icon {
   font-weight: bold;
+
 }

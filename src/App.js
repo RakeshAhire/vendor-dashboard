@@ -1,11 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
-import MainLayout from './components/MainLayout';
+import AllRoutes from './routes/AllRoutes';
 
 function App() {
   return (
     <div className="App">
-     <MainLayout />
+     <AllRoutes />
     </div>
   );
 }
