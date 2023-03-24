@@ -18,9 +18,9 @@ const Products = () => {
   // const [data, setData] = useState([]);
   let id;
   const [selectedValue, setSelectedValue] = useState('');
-  const [url, setUrl] = useState("https://erin-tough-viper.cyclic.app/product/allproductdata")
+  const [url, setUrl] = useState("https://erin-tough-viper.cyclic.app/product")
   const { data, loading, error, reFetch } = useFetch(url);
-  console.log('loading: ', loading);
+  // console.log('loading: ', loading);
   // console.log('data: ', data);
 
   useEffect(() => {
@@ -41,7 +41,6 @@ const Products = () => {
     setSelectedValue(e)
     const newUrl = `https://erin-tough-viper.cyclic.app/product/allproductdata?category=${e}`;
     setUrl(newUrl);
-    // console.log(selectedValue);
     // https://aquamarine-crayfish-tux.cyclic.app/product/allproductdata?category=men
   }
 

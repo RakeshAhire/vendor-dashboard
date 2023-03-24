@@ -12,11 +12,32 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { PasswordField } from '../components/PasswordField'
+import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
-  // console.log("Ok")
+  const {loginUser}=useContext(AuthContext)
+  const [details, setDetails] = useState({
+    email: undefined,
+    password: undefined 
+  })
+const navigate=useNavigate()
+  const handleChange = (e) => {
+    const { value, id } = e.target;
+    setDetails({ ...details, [id]: value })
+    console.log('details: ', details);
+  }
+  const vendorLogin = () => {
+    axios.post("https://erin-tough-viper.cyclic.app/vendor/login", details)
+      .then(res => {
+        console.log(res)
+        loginUser(res.data.token)
+        navigate("/vendor")
+      })
+  }
   return (
     <Container
       maxW="lg"
@@ -78,20 +99,20 @@ const Login = () => {
             <Stack spacing="5">
               <FormControl>
                 <FormLabel htmlFor="email">Email</FormLabel>
-                <Input id="email" type="email" />
+                <Input onChange={handleChange} id="email" type="email" />
               </FormControl>
-              <PasswordField />
+              <PasswordField onChange={handleChange} id={"password"} />
             </Stack>
             <HStack justify="space-between">
               <Checkbox defaultChecked>Remember me</Checkbox>
-              <Link to="/forgotpassword"> 
-              <Button variant="link" colorScheme="blue" size="sm">
-                Forgot password?
-              </Button>
+              <Link to="/forgotpassword">
+                <Button variant="link" colorScheme="blue" size="sm">
+                  Forgot password?
+                </Button>
               </Link>
             </HStack>
             <Stack spacing="6">
-              <Button colorScheme='blue'>Sign in</Button>
+              <Button onClick={vendorLogin} colorScheme='blue'>Sign in</Button>
               {/* <HStack>
                 <Divider />
                 <Text fontSize="sm" whiteSpace="nowrap" color="muted">

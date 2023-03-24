@@ -12,6 +12,7 @@ import {
   import { HiEye, HiEyeOff } from 'react-icons/hi'
   
   export const PasswordField = forwardRef((props, ref) => {
+
     const { isOpen, onToggle } = useDisclosure()
     const inputRef = useRef(null)
     const mergeRef = useMergeRefs(inputRef, ref)
@@ -36,7 +37,6 @@ import {
             />
           </InputRightElement>
           <Input
-            id="password"
             ref={mergeRef}
             name="password"
             type={isOpen ? 'text' : 'password'}

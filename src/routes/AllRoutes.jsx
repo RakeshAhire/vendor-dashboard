@@ -9,18 +9,19 @@ import Order from '../pages/Order'
 import Products from '../pages/Products'
 import ResetPassword from '../pages/ResetPassword'
 import TodaysOrder from '../pages/TodaysOrder'
+import PrivateRoute from './PrivateRoute'
 const AllRoutes = () => {
     return (
         <Routes>
-            <Route path="/" element={<Login />}></Route>          
+            <Route path="/" element={<Login />}></Route>
             <Route path="/forgot-password" element={<ForgotPassword />}></Route>
             <Route path="/reset-password" element={<ResetPassword />}></Route>
-            <Route path="/admin" element={<MainLayout />}>
-                <Route index element={<Dashboard/>} />
-                <Route path='allproducts' element={<Products/>} />
-                <Route path='addproducts' element={<AddProducts/>} />
-                <Route path='allorders' element={<Order/>} />
-                <Route path='todaysorders' element={<TodaysOrder/>} />
+            <Route path="/vendor" element={<PrivateRoute> <MainLayout /></PrivateRoute>}>
+                <Route index element={<Dashboard />} />
+                <Route path='allproducts' element={<Products />} />
+                <Route path='addproducts' element={<AddProducts />} />
+                <Route path='allorders' element={<Order />} />
+                <Route path='todaysorders' element={<TodaysOrder />} />
             </Route>
         </Routes>
     )
