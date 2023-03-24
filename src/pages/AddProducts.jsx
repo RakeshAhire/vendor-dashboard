@@ -6,9 +6,9 @@ import {
     FormLabel,
     Input,
     Button,
-    TextArea,
     Select,
-    Grid
+    Grid,
+    Textarea
 } from "@chakra-ui/react";
 import { AuthContext } from '../context/AuthContext';
 
@@ -58,38 +58,72 @@ const AddProducts = () => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        console.log('value: ', value);
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
     };
-
+    const handleImage = (e) => {
+        console.log('e: ', e);
+        let reader=new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload=()=>{
+            setFormData({...formData,image:[...formData.image,reader.result],...formData.image.slice(1)})
+        }
+    }
     const handleSaveClick = async (event) => {
         event.preventDefault()
         console.log(formData)
-        // try {
-        //     const config = {
-        //         headers: { Authorization: `Bearer ${state.token}` },
-        //     };
-        //     const data = {
-        //         title: formData.title,
-        //         price: formData.price,
-        //         rating: formData.rating,
-        //         description: formData.description,
-        //         category: formData.category.split(',').map((item) => item.trim()),
-        //         image: formData.image.split(',').map((item) => item.trim()),
-        //         reviews: formData.review.split(',').map((item) => item.trim()),
-        //         size: formData.size.split(',').map((item) => item.trim()),
-        //         color: formData.colour.split(',').map((item) => item.trim()),
-        //         tags: formData.tags.split(',').map((item) => item.trim()),
-        //         productId: formData.productId,
-        //         additionalInfo: formData.additionalInfo.split(',').map((item) => item.trim()),
-        //     }
-        //     const response = await axios.post('https://example.com/products', data, config)
-        //     console.log(response.data)
-        // } catch (error) {
-        //     console.error(error)
-        // }
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${state.token}` },
+            };
+            const data = {
+                title: formData.title,
+                price: formData.price,
+                price_slab: formData.price_slab,
+                unitPrice: formData.unitPrice,
+                packedPrice: formData.packedPrice,
+                materialUsed: formData.materialUsed,
+                pack: [
+                    {
+                        quant: formData.pack[0].quant,
+                        sizes: formData.pack[0].sizes,
+                    },
+                ],
+                avgrating: formData.avgrating,
+                rating: formData.rating,
+                info: formData.info,
+                brand: formData.brand,
+                tags: formData.tags.split(',').map((item) => item.trim()),
+                description: {
+                    heading: formData.description.heading,
+                    bullet_points: formData.description.bullet_points.split(',').map((item) => item.trim()),
+                    ending: formData.description.ending,
+                },
+                additional_info: formData.additional_info.split(",").map((item) => item.trim()),
+                series: formData.series.split(',').map((item) => item.trim()),
+                category: formData.category.split(',').map((item) => item.trim()),
+                discount: formData.discount,
+                image:formData.image.split(",").map((item)=>item.trim()),
+                review: formData.review,
+                size: formData.size.split(',').map((item) => item.trim()),
+                colour: formData.colour.split(',').map((item) => item.trim()),
+                cod: formData.cod,
+                shipping: formData.shipping,
+                delivery: formData.delivery,
+                items_left: formData.items_left,
+                sold_by_location: formData.sold_by_location,
+                sold_by: formData.sold_by,
+                emi: formData.emi,
+            }
+
+            const response = await axios.post('https://example.com/products', data, config)
+            console.log(response.data)
+        } catch (error) {
+            console.error(error)
+        }
     }
     return (
         <Grid gridTemplateColumns={["repeat(1, 1fr)", "repeat(1, 1fr)", "repeat(2, 1fr)", "repeat(3, 1fr)"]} gap={4} p={4} borderWidth="1px" borderRadius="lg" m={"auto"}>
@@ -153,7 +187,7 @@ const AddProducts = () => {
                     name="quant"
                     value={formData.pack[0].quant}
                     placeholder="Quantity"
-                    onChange={(e) => setFormData({ ...formData, pack: [{ ...formData.pack[0], quant: e.target.value }, ...formData.pack.slice(1)] })} 
+                    onChange={(e) => setFormData({ ...formData, pack: [{ ...formData.pack[0], quant: e.target.value }, ...formData.pack.slice(1)] })}
                 />
 
                 <Input
@@ -161,7 +195,7 @@ const AddProducts = () => {
                     name="sizes"
                     placeholder='Sizes'
                     value={formData.pack[0].sizes}
-                     onChange={(e) => setFormData({ ...formData, pack: [{ ...formData.pack[0], sizes: e.target.value }, ...formData.pack.slice(1)] })}
+                    onChange={(e) => setFormData({ ...formData, pack: [{ ...formData.pack[0], sizes: e.target.value }, ...formData.pack.slice(1)] })}
                 />
             </FormControl>
             <FormControl mb={4}>
@@ -184,7 +218,7 @@ const AddProducts = () => {
             </FormControl>
             <FormControl mb={4}>
                 <FormLabel>Info</FormLabel>
-                <Input
+                <Textarea
                     type="text"
                     name="info"
                     value={formData.info}
@@ -204,6 +238,7 @@ const AddProducts = () => {
                 <Input
                     type="text"
                     name="tags"
+                    placeholder='Add Comma after each Tag'
                     value={formData.tags}
                     onChange={handleInputChange}
                 />
@@ -220,7 +255,7 @@ const AddProducts = () => {
                 <Input
 
                     name="bullet_points"
-                    placeholder='Bullet Points'
+                    placeholder='Add Comma after each Bullet Point'
                     value={formData.description.bullet_points}
                     onChange={(e) => setFormData({ ...formData, description: { ...formData.description, bullet_points: e.target.value.split(", ") } })}
                 />
@@ -229,14 +264,14 @@ const AddProducts = () => {
                     name="ending"
                     placeholder="Ending"
                     value={formData.description.ending}
-                  onChange={(e) => setFormData({ ...formData, description: { ...formData.description, ending: e.target.value } })}
+                    onChange={(e) => setFormData({ ...formData, description: { ...formData.description, ending: e.target.value } })}
                 />
             </FormControl>
             <FormControl mb={4}>
                 <FormLabel>Additional_Info</FormLabel>
                 <Input
-                    type="number"
                     name="additional_info"
+                    placeholder='Add Comma after each Additional Info'
                     value={formData.additional_info}
                     onChange={handleInputChange}
                 />
@@ -245,6 +280,7 @@ const AddProducts = () => {
                 <FormLabel>Series</FormLabel>
                 <Input
                     name="series"
+                    placeholder='Add Comma after each Additional Series'
                     value={formData.series}
                     onChange={handleInputChange}
                 />
@@ -256,6 +292,7 @@ const AddProducts = () => {
                     value={formData.category}
                     onChange={handleInputChange}
                 >
+                    <option value="">Select</option>
                     <option value="men">Men</option>
                     <option value="women">Women</option>
                     <option value="kids">Kids</option>
@@ -275,9 +312,8 @@ const AddProducts = () => {
                     type="file"
                     accept='image/*'
                     name="image"
-                    value={formData.image}
                     multiple
-                    onChange={handleInputChange}
+                    onChange={handleImage}
                 />
             </FormControl>
             <FormControl mb={4}>
@@ -294,6 +330,7 @@ const AddProducts = () => {
                 <Input
                     type="text"
                     name="size"
+                    placeholder='Add Comma after each Additional Size'
                     value={formData.size}
                     onChange={handleInputChange}
                 />
@@ -302,6 +339,7 @@ const AddProducts = () => {
                 <FormLabel>Colour</FormLabel>
                 <Input
                     name="colour"
+                    placeholder='Add Comma after each Additional Colour'
                     value={formData.colour}
                     onChange={handleInputChange}
                 />
