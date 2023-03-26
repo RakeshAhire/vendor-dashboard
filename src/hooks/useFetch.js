@@ -1,26 +1,32 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "../context/AuthContext";
 
 const useFetch = (url) => {
-    // console.log('url: ', url);
+    const { state } = useContext(AuthContext)
     const [data, setData] = useState([])
-    // console.log('data: ', data);
+
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false);
-    
+
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchData = async () => {
             setLoading(true);
-             await axios.get(url)
-               .then(res=>{
-                setData(res.data.data);
-                setLoading(false)
-                // console.log('res: ', res);
+            await axios.get(url, {
+                headers: {
+                    Authorization: state.token
+                }
             })
-               .catch(e=> {setError(e)
-                // console.log('e: ', e);
-            })
-            
+                .then(res => {
+                    setData(res.data.data);
+                    setLoading(false)
+                    // console.log('res: ', res);
+                })
+                .catch(e => {
+                    setError(e)
+                    // console.log('e: ', e);
+                })
+
         }
         fetchData()
     }, [])
@@ -28,7 +34,11 @@ const useFetch = (url) => {
     const reFetch = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url,{
+                headers: {
+                    Authorization: state.token
+                }
+            });
             setData(res.data.data)
         } catch (error) {
             setError(error)
@@ -36,7 +46,7 @@ const useFetch = (url) => {
         setLoading(false)
     }
 
-    return { data, loading, error,reFetch }
+    return { data, loading, error, reFetch }
 };
 
 export default useFetch;

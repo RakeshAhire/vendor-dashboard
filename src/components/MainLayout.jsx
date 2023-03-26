@@ -6,23 +6,25 @@ import {
     VideoCameraOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Flex, Icon, Image } from '@chakra-ui/react';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { RiLogoutCircleLine } from 'react-icons/ri';
-import { BiUser,BiMessageSquareAdd } from 'react-icons/bi';
+import { BiUser, BiMessageSquareAdd } from 'react-icons/bi';
 import { FiUsers } from 'react-icons/fi';
 import { RiProductHuntLine } from 'react-icons/ri';
 import { AiOutlineHome } from 'react-icons/ai';
 import { CgToday } from 'react-icons/cg';
+import { AuthContext } from '../context/AuthContext';
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
     } = theme.useToken();
+    const { logoutUser } = useContext(AuthContext)
     return (
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}
@@ -33,11 +35,11 @@ const MainLayout = () => {
                     theme="dark"
                     mode="inline"
                     defaultSelectedKeys={['']}
-                    onClick={({key})=>{
-                        if(key==="signout"){
-                            
+                    onClick={({ key }) => {
+                        if (key === "signout") {
+
                         }
-                        else{
+                        else {
                             navigate(key)
                         }
                     }}
@@ -113,6 +115,7 @@ const MainLayout = () => {
                                 cursor: "pointer",
 
                             }}
+                            onClick={() => logoutUser()}
                             as={RiLogoutCircleLine} boxSize={6} />
                         <Image
                             _hover={{

@@ -8,92 +8,101 @@ import {
     Button,
     Select,
     Grid,
-    Textarea
+    Textarea,
+    Image
 } from "@chakra-ui/react";
 import { AuthContext } from '../context/AuthContext';
 
 
 const AddProducts = () => {
     const { state } = useContext(AuthContext);
-
     const [formData, setFormData] = useState({
         title: "",
-        price: "",
-        price_slab: "",
-        unitPrice: "",
-        packedPrice: "",
+        price: 0,
+        price_slab: 0,
+        unitPrice: 0,
+        packedPrice: 0,
         materialUsed: "",
         pack: [
             {
-                quant: "",
-                sizes: "",
+                quant: 0,
+                sizes: 0,
             },
         ],
-        avgrating: "",
-        rating: "",
+        avgrating: 0,
+        rating: 0,
         info: "",
         brand: "",
         tags: [""],
         description: {
             heading: "",
-            bullet_points: [""],
+            bullet_points: [],
             ending: "",
         },
         additional_info: [""],
         series: [""],
         category: [""],
-        discount: "",
-        image: [""],
+        discount: 0,
+        image: "",
         review: "",
         size: [""],
         colour: [""],
         cod: "",
         shipping: "",
-        delivery: "",
-        items_left: "",
+        delivery: 0,
+        items_left: 0,
         sold_by_location: "",
         sold_by: "",
-        emi: "",
+        emi: 0,
     });
+
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        console.log('value: ', value);
+        // console.log('value: ', value);
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
     };
     const handleImage = (e) => {
-        console.log('e: ', e);
-        let reader=new FileReader();
+
+        let reader = new FileReader();
+        // console.log(e.target.files)
         reader.readAsDataURL(e.target.files[0]);
-        reader.onload=()=>{
-            setFormData({...formData,image:[...formData.image,reader.result],...formData.image.slice(1)})
+        // console.log( e.target.files);
+        reader.onload = () => {
+            setFormData({ ...formData, image: [...formData.image, reader.result], ...formData.image.slice(1) })
+            // setPhoto(reader.result);
+            // console.log('reader.result: ', reader.result);
         }
     }
     const handleSaveClick = async (event) => {
         event.preventDefault()
-        console.log(formData)
+
         try {
             const config = {
-                headers: { Authorization: `Bearer ${state.token}` },
+
+                headers: { Authorization: `${state.token}` },
+
             };
+            // console.log('config: ', config);
             const data = {
                 title: formData.title,
-                price: formData.price,
-                price_slab: formData.price_slab,
-                unitPrice: formData.unitPrice,
-                packedPrice: formData.packedPrice,
+                price: Number(formData.price),
+                price_slab: Number(formData.price_slab),
+                unitPrice: Number(formData.unitPrice),
+                packedPrice: Number(formData.packedPrice),
                 materialUsed: formData.materialUsed,
                 pack: [
                     {
-                        quant: formData.pack[0].quant,
-                        sizes: formData.pack[0].sizes,
+                        quant: Number(formData.pack[0].quant),
+                        sizes: Number(formData.pack[0].sizes),
+                        // sizes: formData.pack[0].sizes.split(',').map((item) => item.trim()),
                     },
                 ],
-                avgrating: formData.avgrating,
-                rating: formData.rating,
+                avgrating: Number(formData.avgrating),
+                rating: Number(formData.rating),
                 info: formData.info,
                 brand: formData.brand,
                 tags: formData.tags.split(',').map((item) => item.trim()),
@@ -105,21 +114,26 @@ const AddProducts = () => {
                 additional_info: formData.additional_info.split(",").map((item) => item.trim()),
                 series: formData.series.split(',').map((item) => item.trim()),
                 category: formData.category.split(',').map((item) => item.trim()),
-                discount: formData.discount,
-                image:formData.image.split(",").map((item)=>item.trim()),
+                discount: Number(formData.discount),
+                image: formData.image,
                 review: formData.review,
                 size: formData.size.split(',').map((item) => item.trim()),
                 colour: formData.colour.split(',').map((item) => item.trim()),
                 cod: formData.cod,
                 shipping: formData.shipping,
-                delivery: formData.delivery,
-                items_left: formData.items_left,
+                delivery: Number(formData.delivery),
+                items_left: Number(formData.items_left),
                 sold_by_location: formData.sold_by_location,
                 sold_by: formData.sold_by,
-                emi: formData.emi,
+                emi: Number(formData.emi),
             }
-
-            const response = await axios.post('https://example.com/products', data, config)
+            console.log(data)
+            const response = await axios.post('https://erin-tough-viper.cyclic.app/product/add', data, {
+                headers: {
+                    Authorization: `${state.token}`
+                }
+            });
+            // axios.post("https://erin-tough-viper.cyclic.app/cart/add", data, )
             console.log(response.data)
         } catch (error) {
             console.error(error)
@@ -157,6 +171,7 @@ const AddProducts = () => {
             <FormControl mb={4}>
                 <FormLabel>Unit Price</FormLabel>
                 <Input
+                type="number"
                     name="unitPrice"
                     value={formData.unitPrice}
                     onChange={handleInputChange}
@@ -257,7 +272,7 @@ const AddProducts = () => {
                     name="bullet_points"
                     placeholder='Add Comma after each Bullet Point'
                     value={formData.description.bullet_points}
-                    onChange={(e) => setFormData({ ...formData, description: { ...formData.description, bullet_points: e.target.value.split(", ") } })}
+                    onChange={(e) => setFormData({ ...formData, description: { ...formData.description, bullet_points: e.target.value } })}
                 />
                 <Input
 

@@ -11,6 +11,7 @@ import {
   Input,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useContext, useState } from 'react'
@@ -19,24 +20,65 @@ import { PasswordField } from '../components/PasswordField'
 import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
-  const {loginUser}=useContext(AuthContext)
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+  const { loginUser } = useContext(AuthContext)
   const [details, setDetails] = useState({
     email: undefined,
-    password: undefined 
+    password: undefined
   })
-const navigate=useNavigate()
+  const navigate = useNavigate()
   const handleChange = (e) => {
     const { value, id } = e.target;
     setDetails({ ...details, [id]: value })
-    console.log('details: ', details);
+    // console.log('details: ', details);
   }
   const vendorLogin = () => {
-    axios.post("https://erin-tough-viper.cyclic.app/vendor/login", details)
-      .then(res => {
-        console.log(res)
-        loginUser(res.data.token)
-        navigate("/vendor")
+    setLoading(true)
+    if ((details.email === undefined || null) && (details.password === undefined || null)) {
+      setLoading(false)
+      return toast({
+        title: "Error",
+        description: "Please fill Details",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       })
+
+    }
+    else {
+      axios.post("https://erin-tough-viper.cyclic.app/vendor/login", details)
+        .then(res => {
+          // console.log(res)
+          if (res.data.error) {
+            toast({
+              title: "Error",
+              description: res.data.msg,
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+          else {
+            loginUser(res.data.token);
+            navigate("/vendor");
+            toast({
+              title: "Success",
+              description: res.data.msg,
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+          setLoading(false)
+        })
+
+        .catch(e => {
+          console.log(e)
+          setLoading(false)
+        })
+    }
+
   }
   return (
     <Container
@@ -105,14 +147,14 @@ const navigate=useNavigate()
             </Stack>
             <HStack justify="space-between">
               <Checkbox defaultChecked>Remember me</Checkbox>
-              <Link to="/forgotpassword">
+              <Link to="/forgot-password">
                 <Button variant="link" colorScheme="blue" size="sm">
                   Forgot password?
                 </Button>
               </Link>
             </HStack>
             <Stack spacing="6">
-              <Button onClick={vendorLogin} colorScheme='blue'>Sign in</Button>
+              <Button isLoading={loading} onClick={vendorLogin} colorScheme='blue'>Sign in</Button>
               {/* <HStack>
                 <Divider />
                 <Text fontSize="sm" whiteSpace="nowrap" color="muted">

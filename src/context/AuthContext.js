@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
     const [state, handleState] = useState({
-        isAuth: true,
+        isAuth: false,
         token: null
     })
     const loginUser = (payload) => {

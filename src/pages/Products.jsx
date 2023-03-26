@@ -18,7 +18,7 @@ const Products = () => {
   // const [data, setData] = useState([]);
   let id;
   const [selectedValue, setSelectedValue] = useState('');
-  const [url, setUrl] = useState("https://erin-tough-viper.cyclic.app/product")
+  const [url, setUrl] = useState("https://erin-tough-viper.cyclic.app/product/allproductdata")
   const { data, loading, error, reFetch } = useFetch(url);
   // console.log('loading: ', loading);
   // console.log('data: ', data);
@@ -38,7 +38,7 @@ const Products = () => {
   }
 
   const handleFilter = (e) => {
-    setSelectedValue(e)
+    // setSelectedValue(e)
     const newUrl = `https://erin-tough-viper.cyclic.app/product/allproductdata?category=${e}`;
     setUrl(newUrl);
     // https://aquamarine-crayfish-tux.cyclic.app/product/allproductdata?category=men
@@ -68,7 +68,7 @@ const Products = () => {
         templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)", "repeat(3, 1fr)", "repeat(4, 1fr)"]} gap={6} >
         {loading ? Array(10).fill(" ").map((e, i) => (
           <Loader />
-        )) : data.map((property, i) => (
+        )) : data?.map((property, i) => (
           <ProductCard key={property._id} property={property} />
         ))}
       </Grid>
